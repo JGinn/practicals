@@ -40,10 +40,15 @@ module Measurement
     end
 
     def on_def(ast)
+      super
+
+      call_method = ast.children[0]
+      return if call_method == :initialize
+
       method_processor = MethodProcessor.new
       method_processor.process(ast)
-      # TODO: populate "dependencies" object
-      super
+
+      dependencies.add_all(call_method, method_processor.dependees)
     end
 
     def dependencies
@@ -52,6 +57,18 @@ module Measurement
   end
 
   class MethodProcessor < Parser::AST::Processor
-    # TODO
+    def dependees
+      @dependees ||= []
+    end
+
+    def on_send(node)
+      super
+      reciever, method = node.children
+      if reciever.nil?
+        dependees << method
+      elsif reciever.type == :ivar
+        dependees << reciever.children[0]
+      end
+    end
   end
 end
