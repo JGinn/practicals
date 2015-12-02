@@ -11,8 +11,16 @@ module Measurement
       messages = messages_for(method)
 
       total = messages.size
-      to_self = 0
-      to_ancestors = 0
+      print messages
+      print "\n\n\n\n"
+      to_self = messages.find_all { |message|
+        message.children[0] == nil
+      }.size
+
+      to_ancestors = messages.find_all { |message|
+        message.children[0] ? message.children[0].type == :zsuper : false
+      }.size
+
       mpc = total - (to_self + to_ancestors)
 
       {
@@ -33,9 +41,9 @@ module Measurement
   class MessageFinder < Parser::AST::Processor
     attr_reader :count
 
-    def on_send(ast)
+    def on_send(node)
       super
-      messages << ast
+      messages << node
     end
 
     def messages
