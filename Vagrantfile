@@ -37,7 +37,7 @@ Vagrant.configure(2) do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  # config.vm.synced_folder "../data", "/vagrant_data"
+  config.vm.synced_folder "../flippd", "/vagrant/habitable_programs/data/flippd"
 
   # Define a Vagrant Push strategy for pushing to Atlas. Other push strategies
   # such as FTP and Heroku are also available. See the documentation at
@@ -50,6 +50,24 @@ Vagrant.configure(2) do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", path: "config/provision.sh", privileged: false
+
+  ## Install ZSH...
+  # From http://stackoverflow.com/a/31195091
+
+  # Install git and zsh prerequisites
+  config.vm.provision :shell, inline: "apt-get -y install git"
+  config.vm.provision :shell, inline: "apt-get -y install zsh"
+
+  # Clone Oh My Zsh from the git repo
+  config.vm.provision :shell, privileged: false,
+    inline: "git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh"
+
+  # Copy in the default .zshrc config file
+  config.vm.provision :shell, privileged: false,
+    inline: "cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc"
+
+  # Change the vagrant user's shell to use zsh
+  config.vm.provision :shell, inline: "chsh -s /bin/zsh vagrant"
 
   config.vm.provider "virtualbox" do |vb|
     # Display the VirtualBox GUI when booting the machine
