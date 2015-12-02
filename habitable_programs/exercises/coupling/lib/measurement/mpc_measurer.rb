@@ -12,7 +12,7 @@ module Measurement
 
       total = messages.size
       to_self = messages.find_all { |message|
-        message.children[0] == nil
+        message.children[0].nil?
       }.size
 
       to_ancestors = messages.find_all { |message|
