@@ -11,8 +11,6 @@ module Measurement
       messages = messages_for(method)
 
       total = messages.size
-      print messages
-      print "\n\n\n\n"
       to_self = messages.find_all { |message|
         message.children[0] == nil
       }.size
