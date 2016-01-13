@@ -38,6 +38,7 @@ Vagrant.configure(2) do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   config.vm.synced_folder "../flippd", "/vagrant/habitable_programs/data/flippd"
+  config.vm.synced_folder "../flippd_original", "/vagrant/habitable_programs/data/flippd_original"
 
   # Define a Vagrant Push strategy for pushing to Atlas. Other push strategies
   # such as FTP and Heroku are also available. See the documentation at
